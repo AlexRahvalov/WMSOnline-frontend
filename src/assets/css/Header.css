@@ -1,0 +1,12 @@
+/* warehouse-management/src/assets/css/Header.css */
+
+.custom-button {
+    color: #fff; /* Белый текст по умолчанию */
+    background-color: #343a40; /* Черный фон */
+}
+
+.custom-button:hover {
+    color: #343a40; /* Темный текст при наведении */
+    background-color: #fff; /* Белый фон при наведении */
+    border: 2px solid #343a40;
+}
