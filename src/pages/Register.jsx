@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Card } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'; // Переменная окружения для API
+import { apiRequest } from '../utils/api';  // Импортируем apiRequest
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -24,28 +23,17 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/api/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-          first_name: firstName,
-          last_name: lastName,
-        }),
+      const result = await apiRequest('/api/register', 'POST', {
+        username,
+        email,
+        password,
+        first_name: firstName,
+        last_name: lastName,
       });
 
-      if (!response.ok) {
-        const result = await response.json();
-        setError(result.message || 'Произошла ошибка при регистрации');
-      } else {
-        navigate('/login');
-      }
+      navigate('/login'); // Перенаправление на страницу авторизации после успешной регистрации
     } catch (err) {
-      setError('Ошибка подключения к серверу');
+      setError(err.message || 'Произошла ошибка при регистрации');
     }
   };
 
