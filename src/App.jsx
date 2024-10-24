@@ -1,27 +1,27 @@
+// src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Импортируем необходимые компоненты
-import 'bootstrap/dist/css/bootstrap.min.css'; // Импортируем стили Bootstrap
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AuthPage from './pages/Auth/AuthPage';
+import MainLayout from './pages/MainLayout';
 
-import Home from './pages/Home';  // Импорт главной страницы
-import Header from './components/Header';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
-import ProtectedRoute from './routes/ProtectedRoute'; // Подключаем компонент защищённого маршрута
+const AppContent = () => {
+    const isAuthenticated = !!localStorage.getItem('token');
 
-function App() {
-  return (
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* Для защищенного маршрута используем ProtectedRoute */}
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      </Routes>
-    </Router>
-  );
-}
+    return (
+        <Routes>
+            <Route path="/auth/login" element={isAuthenticated ? <Navigate to="/profile" /> : <AuthPage isLogin={true} />} />
+            <Route path="/auth/register" element={isAuthenticated ? <Navigate to="/profile" /> : <AuthPage isLogin={false} />} />
+            <Route path="/*" element={<MainLayout />} /> {/* Используем MainLayout для всех остальных маршрутов */}
+        </Routes>
+    );
+};
+
+const App = () => {
+    return (
+        <Router>
+            <AppContent />
+        </Router>
+    );
+};
 
 export default App;

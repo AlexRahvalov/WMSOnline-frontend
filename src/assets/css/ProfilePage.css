@@ -1,0 +1,19 @@
+.profile-container {
+    display: grid;
+    justify-items: center;
+    padding: 0 15px;
+    width: 100%;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 1200px; /* Максимальная ширина карточки */
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 0; /* Убираем отступы для мобильной версии */
+    }
+}

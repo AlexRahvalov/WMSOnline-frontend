@@ -1,55 +1,83 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom'; // Импортируем useLocation для получения текущего пути
-import { Navbar, Nav, Container, Form, Button, FormControl, InputGroup } from 'react-bootstrap';
-import { FaSearch, FaBars, FaRegIdCard } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import React from 'react'; 
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { Navbar, Container, Button, ButtonGroup } from 'react-bootstrap';
+import { FaSearch, FaBars, FaRegIdCard, FaUser } from 'react-icons/fa';
 
-const Header = () => {
-  const location = useLocation(); // Получаем текущий путь
+const Header = ({ toggleSidebar }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isAuthenticated = !!localStorage.getItem('token'); // Проверка авторизации
 
-  // Проверяем, если текущий путь не "/login", тогда рендерим шапку
-  if (location.pathname === '/login') return null;
+  // Проверяем текущий путь, если это "/login" или "/register", скрываем шапку
+  if (location.pathname === '/auth/login' || location.pathname === '/register') {
+    return null;
+  }
+
+  // Обработчик выхода из системы
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    navigate('/auth/login');
+  };
 
   return (
     <Navbar bg="light" expand="lg" fixed="top">
-      <Container>
-        <Navbar.Brand href="#">
+      <Container className="header-container">
+        {/* Кнопка меню для десктопной версии */}
+        <div className="d-none d-lg-flex align-items-center">
+          <Button variant="outline-secondary me-2" onClick={toggleSidebar} className="bg-secondary-subtle">
+            <FaBars />
+          </Button>
+        </div>
+
+        {/* Логотип */}
+        <Navbar.Brand href="#" className="text-secondary logo">
           <strong>WMS</strong>Online
         </Navbar.Brand>
 
+        {/* Кнопки для десктопной версии */}
         <div className="d-none d-lg-flex ms-auto align-items-center">
-          <Form className="d-flex me-3" style={{ maxWidth: '300px' }}>
-            <InputGroup>
-              <FormControl
-                type="search"
-                placeholder="Поиск"
-                aria-label="Search"
-              />
-              <Button variant="outline-success">
-                <FaSearch />
+          <Button variant="outline-secondary me-2" className="bg-secondary-subtle">
+            <FaSearch />
+          </Button>
+          {isAuthenticated ? (
+            <Link to="/profile">
+              <Button variant="outline-secondary" className="bg-secondary-subtle" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                <FaUser />
               </Button>
-            </InputGroup>
-          </Form>
-
-          {/* Кнопка входа */}
-          <Link to="/login">
-            <Button variant="outline-primary">
-              Войти
-            </Button>
-          </Link>
+            </Link>
+          ) : (
+            <Link to="/auth/login">
+              <Button variant="outline-secondary" className="bg-secondary-subtle" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                <FaRegIdCard />
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Мобильные кнопки */}
         <div className="d-flex d-lg-none ms-auto align-items-center">
-          <Button variant="outline-primary me-2">
-            <FaRegIdCard />
-          </Button>
-          <Button variant="outline-primary me-2">
-            <FaBars />
-          </Button>
-          <Button variant="outline-success">
-            <FaSearch />
-          </Button>
+          <ButtonGroup className="me-2" style={{ gap: '0.5rem' }}>
+            <Button variant="outline-secondary" onClick={toggleSidebar} className="bg-secondary-subtle">
+              <FaBars />
+            </Button>
+            <Button variant="outline-secondary" className="bg-secondary-subtle">
+              <FaSearch />
+            </Button>
+            {isAuthenticated ? (
+              <Link to="/profile">
+                <Button variant="outline-secondary" className="bg-secondary-subtle" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                  <FaUser />
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/auth/login">
+                <Button variant="outline-secondary" className="bg-secondary-subtle" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                  <FaRegIdCard />
+                </Button>
+              </Link>
+            )}
+          </ButtonGroup>
         </div>
       </Container>
     </Navbar>

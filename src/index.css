@@ -1,0 +1,14 @@
+.main-layout {
+    display: flex;
+}
+
+.content {
+    flex: 1;
+    transition: padding-left 0.3s ease; /* Анимация для плавного изменения отступа */
+}
+
+@media (min-width: 992px) { /* Только для десктопной версии */
+    .content.sidebar-open {
+        padding-left: 260px; /* Отступ контента вправо, когда меню открыто, с минимальным отступом */
+    }
+}
